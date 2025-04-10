@@ -1,0 +1,20 @@
+{
+  "name": "teacher-irv-site",
+  "version": "1.0.0",
+  "private": true,
+  "homepage": "https://kettn0504.github.io/teacher-irv-site",
+  "dependencies": {
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
+    "react-scripts": "5.0.1"
+  },
+  "devDependencies": {
+    "gh-pages": "^5.0.0"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
+  }
+}
