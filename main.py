@@ -12,7 +12,6 @@ from typing import List, Optional
 # ==========================================
 app = FastAPI()
 
-# 允許跨網域 (讓你的 HTML 網頁可以連線)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -21,7 +20,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# 啟動時下載必要的語料庫 (Render 伺服器需要)
 @app.on_event("startup")
 async def startup_event():
     try:
@@ -33,7 +31,7 @@ async def startup_event():
     print("✅ NLTK 資料庫準備完成")
 
 # ==========================================
-# 2. 資料庫 (The Database)
+# 2. 資料庫
 # ==========================================
 AGENTS = [
     {"word": "The teacher", "person": 3, "number": "singular", "type": "noun"},
@@ -42,7 +40,8 @@ AGENTS = [
     {"word": "They", "person": 3, "number": "plural", "type": "pronoun"},
     {"word": "The chef", "person": 3, "number": "singular", "type": "noun"},
     {"word": "The writer", "person": 3, "number": "singular", "type": "noun"},
-    {"word": "We", "person": 1, "number": "plural", "type": "pronoun"}
+    {"word": "We", "person": 1, "number": "plural", "type": "pronoun"},
+    {"word": "John", "person": 3, "number": "singular", "type": "proper_noun"} # 測試專有名詞
 ]
 
 TRANSITIVE_VERBS = [
@@ -57,18 +56,14 @@ TRANSITIVE_VERBS = [
 ]
 
 TARGETS = [
-    # Text 類
     {"word": "the book", "person": 3, "number": "singular", "category": "text"},
     {"word": "the letters", "person": 3, "number": "plural", "category": "text"},
     {"word": "the email", "person": 3, "number": "singular", "category": "text"},
-    # Food 類
     {"word": "the apple", "person": 3, "number": "singular", "category": "food"},
     {"word": "the cookies", "person": 3, "number": "plural", "category": "food"},
     {"word": "the steak", "person": 3, "number": "singular", "category": "food"},
-    # Project 類
     {"word": "the website", "person": 3, "number": "singular", "category": "project"},
     {"word": "the bridge", "person": 3, "number": "singular", "category": "project"},
-    # Place 類
     {"word": "the room", "person": 3, "number": "singular", "category": "place"},
     {"word": "the kitchen", "person": 3, "number": "singular", "category": "place"}
 ]
@@ -83,8 +78,39 @@ PRONOUN_OBJ_MAP = {"I": "me", "He": "him", "She": "her", "We": "us", "They": "th
 # ==========================================
 # 3. 核心邏輯工具 (Helper Functions)
 # ==========================================
+
+# [關鍵修正] 新增這個函數來處理句子中間的大小寫
+def format_mid_sentence(word_obj, case_type="subject"):
+    """
+    處理句子中間的單字格式：
+    1. 代名詞 -> 轉受格或小寫
+    2. 普通名詞 (The teacher) -> 轉小寫 (the teacher)
+    3. 專有名詞 (John) -> 保持大寫
+    """
+    text = word_obj["word"]
+    w_type = word_obj.get("type", "noun")
+    
+    # 狀況 A: 代名詞
+    if w_type == "pronoun":
+        if case_type == "object":
+            # 轉受格 (He -> him)
+            return PRONOUN_OBJ_MAP.get(text, text)
+        else:
+            # 轉小寫 (He -> he), 但 I 除外
+            if text == "I": return "I"
+            return text.lower()
+
+    # 狀況 B: 普通名詞 (The teacher -> the teacher)
+    elif w_type == "noun":
+        return text.lower()
+
+    # 狀況 C: 專有名詞 (John -> John)
+    elif w_type == "proper_noun":
+        return text
+    
+    return text
+
 def get_be_verb(target, tense):
-    """決定 Be 動詞是 is/am/are 還是 was/were"""
     person, number = target["person"], target["number"]
     if tense == "past":
         if number == "singular": return "was"
@@ -95,50 +121,36 @@ def get_be_verb(target, tense):
         return "are"
 
 def generate_passive_be_cloze_with_time():
-    """生成帶有時間錨點的被動語態填空題"""
-    
-    # 1. 選材 (從資料庫隨機挑選)
     verb_obj = random.choice(TRANSITIVE_VERBS)
     
-    # 篩選符合語意邏輯的受詞 (例如 eat 只能配 food)
+    # 篩選符合語意邏輯的受詞
     valid_targets = [t for t in TARGETS if t["category"] == verb_obj["target_req"]]
-    if not valid_targets: # 防呆機制
+    if not valid_targets:
         target = random.choice(TARGETS)
     else:
         target = random.choice(valid_targets)
         
     agent = random.choice(AGENTS)
-    
-    # 2. 隨機決定時態 (決定這一題考過去式還是現在式)
     tense = random.choice(["past", "present"])
-    
-    # 3. 計算正確答案
     correct_be = get_be_verb(target, tense)
-
-    # 4. 選取對應的時間詞 (這是關鍵提示)
     time_marker = random.choice(TIME_MARKERS[tense])
 
-    # 5. 組裝題目字串
+    # 組裝題目
     target_text = target["word"].capitalize()
     
-    # 處理 Agent (代名詞轉受格, ex: by him)
-    agent_text = agent["word"]
-    if agent["type"] == "pronoun":
-        agent_text = PRONOUN_OBJ_MAP.get(agent_text, agent_text)
+    # [關鍵修正] 使用 format_mid_sentence 來處理 Agent
+    # 因為是 by + Agent，所以是用 "object" (受格) 模式
+    agent_text = format_mid_sentence(agent, case_type="object")
     
-    # 題目格式: [Target] ____ [Vpp] by [Agent] [Time].
     question_sentence = f"{target_text} ____ {verb_obj['vpp']} by {agent_text} {time_marker}."
     
-    # 6. 生成選項 (包含正確答案與混淆項)
+    # 生成選項
     distractors = set()
-    
-    # 邏輯 A: 加入錯誤的數 (單複數錯誤)
     if correct_be == "was": distractors.add("were")
     if correct_be == "were": distractors.add("was")
     if correct_be == "is": distractors.add("are")
     if correct_be == "are": distractors.add("is")
     
-    # 邏輯 B: 加入錯誤的時態 (這是最重要的陷阱，因為有時間詞)
     if tense == "past":
         distractors.add("is")
         distractors.add("are")
@@ -146,14 +158,12 @@ def generate_passive_be_cloze_with_time():
         distractors.add("was")
         distractors.add("were")
         
-    # 轉成列表並洗牌
     final_options = list(distractors)
-    # 確保只有 3 個干擾項
     if len(final_options) > 3:
         final_options = final_options[:3]
     
-    final_options.append(correct_be) # 加入正解
-    random.shuffle(final_options)    # 再次洗牌，確保答案位置隨機
+    final_options.append(correct_be)
+    random.shuffle(final_options)
     
     return {
         "question": question_sentence,
@@ -162,17 +172,15 @@ def generate_passive_be_cloze_with_time():
     }
 
 # ==========================================
-# 4. API 接口 (Endpoint)
+# 4. API 接口
 # ==========================================
 @app.get("/")
 def read_root():
-    return {"status": "Online", "message": "English Brain is Active!"}
+    return {"status": "Online", "message": "Grammar API v2 (Fixed Case)"}
 
 @app.get("/api/generate-cloze")
 def get_cloze_question():
-    # 這裡不再回傳死資料，而是呼叫上面的生成函數
     return generate_passive_be_cloze_with_time()
 
-# 給 Render 的啟動點
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=10000)
