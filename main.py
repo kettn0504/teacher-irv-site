@@ -48,10 +48,34 @@ TRANSITIVE_VERBS = [
     {"base": "clean", "vpp": "cleaned", "target_req": "place"}
 ]
 
+# ==========================================
+# 更新後的 TARGETS (單複數平衡版)
+# ==========================================
 TARGETS = [
+    # --- Text 類 (用於 write, read) ---
     {"word": "the book", "person": 3, "number": "singular", "category": "text"},
+    {"word": "the email", "person": 3, "number": "singular", "category": "text"},
+    {"word": "the letters", "person": 3, "number": "plural", "category": "text"}, # 複數
+    {"word": "the reports", "person": 3, "number": "plural", "category": "text"}, # 複數 (新增)
+    
+    # --- Food 類 (用於 eat, cook, buy) ---
     {"word": "the apple", "person": 3, "number": "singular", "category": "food"},
-    {"word": "the room", "person": 3, "number": "singular", "category": "place"}
+    {"word": "the steak", "person": 3, "number": "singular", "category": "food"},
+    {"word": "the cookies", "person": 3, "number": "plural", "category": "food"}, # 複數
+    {"word": "the vegetables", "person": 3, "number": "plural", "category": "food"}, # 複數 (新增)
+    
+    # --- Project 類 (用於 design, build) ---
+    {"word": "the website", "person": 3, "number": "singular", "category": "project"},
+    {"word": "the bridge", "person": 3, "number": "singular", "category": "project"},
+    {"word": "the houses", "person": 3, "number": "plural", "category": "project"}, # 複數 (新增)
+    {"word": "the plans", "person": 3, "number": "plural", "category": "project"}, # 複數 (新增)
+
+    # --- Place 類 (用於 clean) ---
+    {"word": "the room", "person": 3, "number": "singular", "category": "place"},
+    {"word": "the kitchen", "person": 3, "number": "singular", "category": "place"},
+    {"word": "the windows", "person": 3, "number": "plural", "category": "place"}, # 複數 (新增)
+    {"word": "the floors", "person": 3, "number": "plural", "category": "place"}   # 複數 (新增)
+]
 ]
 
 TIME_MARKERS = {
