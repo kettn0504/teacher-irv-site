@@ -163,29 +163,94 @@ def generate_passive_be_cloze_with_time():
 
 # --- [新增] 連接詞生成函數 ---
 def generate_conjunction_cloze():
-    scenario = random.choice(CONJUNCTION_SCENARIOS)
+    # ==========================================
+# 擴充版連接詞題庫 (Expanded Scenarios)
+# ==========================================
+CONJUNCTION_SCENARIOS = [
+    # --- 因果 (Cause & Effect) ---
+    {
+        "part1": "It was raining heavily,", "part2": "I took an umbrella.",
+        "answer": "so", "distractors": ["but", "because", "although"]
+    },
+    {
+        "part1": "I went to bed early", "part2": "I was very tired.",
+        "answer": "because", "distractors": ["so", "but", "although"]
+    },
+    {
+        "part1": "He didn't study,", "part2": "he failed the test.",
+        "answer": "so", "distractors": ["if", "because", "unless"]
+    },
+    {
+        "part1": "The store was closed", "part2": "it was a holiday.",
+        "answer": "because", "distractors": ["so", "but", "if"]
+    },
+    {
+        "part1": "She was hungry,", "part2": "she made a sandwich.",
+        "answer": "so", "distractors": ["because", "but", "if"]
+    },
     
-    # 判斷挖空位置
-    # 如果 answer 首字大寫 (例如 Although)，代表它是句首，不需要在中間加空格
-    if scenario["answer"][0].isupper():
-        # 題目: ____ it was cold, we went swimming.
-        question = f"____ {scenario['part1'][5:]} {scenario['part2']}" # 去掉 part1 的提示字(Mock logic simple handling) -> 這裡直接用字串拼接更穩
-        
-        # 簡單一點：直接用 scenario 裡的結構
-        question = f"____ {scenario['part1'].replace('____ ', '')} {scenario['part2']}"
-    else:
-        # 題目: It was raining, ____ I took an umbrella.
-        question = f"{scenario['part1']} ____ {scenario['part2']}"
-    
-    # 選項
-    options = scenario["distractors"][:]
-    options.append(scenario["answer"])
-    random.shuffle(options)
-    
-    return {
-        "question": question,
-        "options": options,
-        "answer": scenario["answer"]
+    # --- 轉折 (Contrast) ---
+    {
+        "part1": "He studied very hard,", "part2": "he failed the exam.",
+        "answer": "but", "distractors": ["so", "and", "because"]
+    },
+    {
+        "part1": "The car is very old,", "part2": "it runs fast.",
+        "answer": "yet", "distractors": ["so", "because", "and"]
+    },
+    {
+        "part1": "I wanted to buy the bag,", "part2": "it was too expensive.",
+        "answer": "but", "distractors": ["so", "or", "because"]
+    },
+    {
+        "part1": "____ he is rich,", "part2": "he is not happy.",
+        "answer": "Although", "distractors": ["Because", "So", "If"]
+    },
+    {
+        "part1": "____ it rained,", "part2": "we played soccer.",
+        "answer": "Although", "distractors": ["Because", "So", "Unless"]
+    },
+
+    # --- 條件 (Condition) ---
+    {
+        "part1": "You will be late", "part2": "you hurry up.",
+        "answer": "unless", "distractors": ["if", "so", "and"]
+    },
+    {
+        "part1": "We can go to the park", "part2": "it rains.",
+        "answer": "unless", "distractors": ["if", "because", "so"]
+    },
+    {
+        "part1": "____ you study,", "part2": "you will pass.",
+        "answer": "If", "distractors": ["Unless", "But", "So"]
+    },
+    {
+        "part1": "I will call you", "part2": "I arrive.",
+        "answer": "when", "distractors": ["but", "so", "although"]
+    },
+
+    # --- 時間與其他 (Time & Others) ---
+    {
+        "part1": "Please wait here", "part2": "I come back.",
+        "answer": "until", "distractors": ["because", "so", "but"]
+    },
+    {
+        "part1": "He was reading", "part2": "I was cooking.",
+        "answer": "while", "distractors": ["so", "if", "unless"]
+    },
+    {
+        "part1": "Would you like coffee", "part2": "tea?",
+        "answer": "or", "distractors": ["so", "but", "because"]
+    },
+    {
+        "part1": "I like apples", "part2": "bananas.",
+        "answer": "and", "distractors": ["or", "but", "so"]
+    },
+    {
+        "part1": "Don't go out", "part2": "you finish your homework.",
+        "answer": "before", "distractors": ["so", "but", "while"]
+    }
+]
     }
 
 # ==========================================
