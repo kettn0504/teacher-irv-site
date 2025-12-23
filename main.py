@@ -55,41 +55,127 @@ TRANSITIVE_VERBS = [
 
 # 目標名詞庫：加入 min_level 標籤 (1=國小/入門, 2=國中/進階)
 # 這些單字均來自你提供的 PDF 檔案
+# ==========================================
+# 資料庫擴充版：依據國中 2000 單字表整理
+# ==========================================
 TARGETS = [
-    # --- Text 類 ---
-    {"word": "the book", "person": 3, "number": "singular", "category": "text", "min_level": 1}, [cite: 117]
-    {"word": "the letter", "person": 3, "number": "singular", "category": "text", "min_level": 1}, [cite: 653]
+    # ---------------------------------------------------------
+    # 1. TEXT 類 (搭配 Verbs: read, write)
+    # ---------------------------------------------------------
+    # [Level 1] 國小/基礎
+    {"word": "the book", "person": 3, "number": "singular", "category": "text", "min_level": 1},
+    {"word": "the card", "person": 3, "number": "singular", "category": "text", "min_level": 1},
+    {"word": "the letter", "person": 3, "number": "singular", "category": "text", "min_level": 1},
+    {"word": "the list", "person": 3, "number": "singular", "category": "text", "min_level": 1},
+    {"word": "the menu", "person": 3, "number": "singular", "category": "text", "min_level": 1},
+    {"word": "the note", "person": 3, "number": "singular", "category": "text", "min_level": 1},
+    {"word": "the story", "person": 3, "number": "singular", "category": "text", "min_level": 1},
     {"word": "the comic books", "person": 3, "number": "plural", "category": "text", "min_level": 1},
-    {"word": "the newspaper", "person": 3, "number": "singular", "category": "text", "min_level": 2}, [cite: 789]
-    {"word": "the dictionary", "person": 3, "number": "singular", "category": "text", "min_level": 2}, [cite: 337]
-    {"word": "the magazine", "person": 3, "number": "singular", "category": "text", "min_level": 2}, [cite: 730]
+    # [Level 2] 國中/進階
+    {"word": "the dictionary", "person": 3, "number": "singular", "category": "text", "min_level": 2},
+    {"word": "the email", "person": 3, "number": "singular", "category": "text", "min_level": 2},
+    {"word": "the history", "person": 3, "number": "singular", "category": "text", "min_level": 2},
+    {"word": "the homework", "person": 3, "number": "singular", "category": "text", "min_level": 2},
+    {"word": "the magazine", "person": 3, "number": "singular", "category": "text", "min_level": 2},
+    {"word": "the newspaper", "person": 3, "number": "singular", "category": "text", "min_level": 2},
+    {"word": "the poem", "person": 3, "number": "singular", "category": "text", "min_level": 2},
+    {"word": "the report", "person": 3, "number": "singular", "category": "text", "min_level": 2},
+    {"word": "the sentences", "person": 3, "number": "plural", "category": "text", "min_level": 2},
 
-    # --- Food 類 ---
-    {"word": "the apple", "person": 3, "number": "singular", "category": "food", "min_level": 1}, [cite: 32]
-    {"word": "the egg", "person": 3, "number": "singular", "category": "food", "min_level": 1}, [cite: 433]
-    {"word": "the banana", "person": 3, "number": "singular", "category": "food", "min_level": 1}, [cite: 47]
-    {"word": "the noodles", "person": 3, "number": "plural", "category": "food", "min_level": 1}, [cite: 805]
-    {"word": "the sandwich", "person": 3, "number": "singular", "category": "food", "min_level": 2}, [cite: 1025]
-    {"word": "the steak", "person": 3, "number": "singular", "category": "food", "min_level": 2}, [cite: 1241]
-    {"word": "the vegetables", "person": 3, "number": "plural", "category": "food", "min_level": 2}, [cite: 1431]
-    {"word": "the spaghetti", "person": 3, "number": "singular", "category": "food", "min_level": 2}, [cite: 1175]
+    # ---------------------------------------------------------
+    # 2. FOOD 類 (搭配 Verbs: eat, cook, buy)
+    # ---------------------------------------------------------
+    # [Level 1] 國小/基礎
+    {"word": "the apple", "person": 3, "number": "singular", "category": "food", "min_level": 1},
+    {"word": "the banana", "person": 3, "number": "singular", "category": "food", "min_level": 1},
+    {"word": "the bread", "person": 3, "number": "singular", "category": "food", "min_level": 1},
+    {"word": "the cake", "person": 3, "number": "singular", "category": "food", "min_level": 1},
+    {"word": "the candy", "person": 3, "number": "singular", "category": "food", "min_level": 1},
+    {"word": "the chicken", "person": 3, "number": "singular", "category": "food", "min_level": 1},
+    {"word": "the egg", "person": 3, "number": "singular", "category": "food", "min_level": 1},
+    {"word": "the fish", "person": 3, "number": "singular", "category": "food", "min_level": 1},
+    {"word": "the ice cream", "person": 3, "number": "singular", "category": "food", "min_level": 1},
+    {"word": "the juice", "person": 3, "number": "singular", "category": "food", "min_level": 1},
+    {"word": "the milk", "person": 3, "number": "singular", "category": "food", "min_level": 1},
+    {"word": "the noodles", "person": 3, "number": "plural", "category": "food", "min_level": 1},
+    {"word": "the rice", "person": 3, "number": "singular", "category": "food", "min_level": 1},
+    {"word": "the soup", "person": 3, "number": "singular", "category": "food", "min_level": 1},
+    {"word": "the tea", "person": 3, "number": "singular", "category": "food", "min_level": 1},
+    {"word": "the water", "person": 3, "number": "singular", "category": "food", "min_level": 1},
+    # [Level 2] 國中/進階
+    {"word": "the beef", "person": 3, "number": "singular", "category": "food", "min_level": 2},
+    {"word": "the breakfast", "person": 3, "number": "singular", "category": "food", "min_level": 2},
+    {"word": "the butter", "person": 3, "number": "singular", "category": "food", "min_level": 2},
+    {"word": "the cheese", "person": 3, "number": "singular", "category": "food", "min_level": 2},
+    {"word": "the dinner", "person": 3, "number": "singular", "category": "food", "min_level": 2},
+    {"word": "the dumplings", "person": 3, "number": "plural", "category": "food", "min_level": 2},
+    {"word": "the fruit", "person": 3, "number": "singular", "category": "food", "min_level": 2},
+    {"word": "the ham", "person": 3, "number": "singular", "category": "food", "min_level": 2},
+    {"word": "the lunch", "person": 3, "number": "singular", "category": "food", "min_level": 2},
+    {"word": "the pizza", "person": 3, "number": "singular", "category": "food", "min_level": 2},
+    {"word": "the pork", "person": 3, "number": "singular", "category": "food", "min_level": 2},
+    {"word": "the salad", "person": 3, "number": "singular", "category": "food", "min_level": 2},
+    {"word": "the sandwich", "person": 3, "number": "singular", "category": "food", "min_level": 2},
+    {"word": "the steak", "person": 3, "number": "singular", "category": "food", "min_level": 2},
+    {"word": "the tofu", "person": 3, "number": "singular", "category": "food", "min_level": 2},
+    {"word": "the vegetables", "person": 3, "number": "plural", "category": "food", "min_level": 2},
 
-    # --- Place 類 ---
-    {"word": "the park", "person": 3, "number": "singular", "category": "place", "min_level": 1}, [cite: 905]
-    {"word": "the zoo", "person": 3, "number": "singular", "category": "place", "min_level": 1}, [cite: 1496]
-    {"word": "the room", "person": 3, "number": "singular", "category": "place", "min_level": 1}, [cite: 1080]
-    {"word": "the kitchen", "person": 3, "number": "singular", "category": "place", "min_level": 1}, [cite: 645]
-    {"word": "the restaurant", "person": 3, "number": "singular", "category": "place", "min_level": 2}, [cite: 1000]
-    {"word": "the museum", "person": 3, "number": "singular", "category": "place", "min_level": 2}, [cite: 801]
-    {"word": "the apartment", "person": 3, "number": "singular", "category": "place", "min_level": 2}, [cite: 31]
-    
-    # --- Device/Project 類 (較進階) ---
-    {"word": "the robot", "person": 3, "number": "singular", "category": "device", "min_level": 1}, [cite: 1060]
-    {"word": "the computer", "person": 3, "number": "singular", "category": "device", "min_level": 2}, [cite: 280]
-    {"word": "the refrigerator", "person": 3, "number": "singular", "category": "device", "min_level": 2}, [cite: 1079]
-    {"word": "the helicopter", "person": 3, "number": "singular", "category": "device", "min_level": 2}, [cite: 530]
-    {"word": "the bridge", "person": 3, "number": "singular", "category": "project", "min_level": 1}, [cite: 190]
-    {"word": "the website", "person": 3, "number": "singular", "category": "project", "min_level": 2}
+    # ---------------------------------------------------------
+    # 3. PLACE 類 (搭配 Verbs: clean, visit)
+    # ---------------------------------------------------------
+    # [Level 1] 國小/基礎
+    {"word": "the bank", "person": 3, "number": "singular", "category": "place", "min_level": 1},
+    {"word": "the beach", "person": 3, "number": "singular", "category": "place", "min_level": 1},
+    {"word": "the bedroom", "person": 3, "number": "singular", "category": "place", "min_level": 1},
+    {"word": "the classroom", "person": 3, "number": "singular", "category": "place", "min_level": 1},
+    {"word": "the farm", "person": 3, "number": "singular", "category": "place", "min_level": 1},
+    {"word": "the garden", "person": 3, "number": "singular", "category": "place", "min_level": 1},
+    {"word": "the home", "person": 3, "number": "singular", "category": "place", "min_level": 1},
+    {"word": "the house", "person": 3, "number": "singular", "category": "place", "min_level": 1},
+    {"word": "the kitchen", "person": 3, "number": "singular", "category": "place", "min_level": 1},
+    {"word": "the park", "person": 3, "number": "singular", "category": "place", "min_level": 1},
+    {"word": "the room", "person": 3, "number": "singular", "category": "place", "min_level": 1},
+    {"word": "the school", "person": 3, "number": "singular", "category": "place", "min_level": 1},
+    {"word": "the shop", "person": 3, "number": "singular", "category": "place", "min_level": 1},
+    {"word": "the zoo", "person": 3, "number": "singular", "category": "place", "min_level": 1},
+    # [Level 2] 國中/進階
+    {"word": "the airport", "person": 3, "number": "singular", "category": "place", "min_level": 2},
+    {"word": "the apartment", "person": 3, "number": "singular", "category": "place", "min_level": 2},
+    {"word": "the balcony", "person": 3, "number": "singular", "category": "place", "min_level": 2},
+    {"word": "the bookstore", "person": 3, "number": "singular", "category": "place", "min_level": 2},
+    {"word": "the church", "person": 3, "number": "singular", "category": "place", "min_level": 2},
+    {"word": "the city", "person": 3, "number": "singular", "category": "place", "min_level": 2},
+    {"word": "the department store", "person": 3, "number": "singular", "category": "place", "min_level": 2},
+    {"word": "the hospital", "person": 3, "number": "singular", "category": "place", "min_level": 2},
+    {"word": "the hotel", "person": 3, "number": "singular", "category": "place", "min_level": 2},
+    {"word": "the library", "person": 3, "number": "singular", "category": "place", "min_level": 2},
+    {"word": "the market", "person": 3, "number": "singular", "category": "place", "min_level": 2},
+    {"word": "the museum", "person": 3, "number": "singular", "category": "place", "min_level": 2},
+    {"word": "the office", "person": 3, "number": "singular", "category": "place", "min_level": 2},
+    {"word": "the restaurant", "person": 3, "number": "singular", "category": "place", "min_level": 2},
+    {"word": "the restroom", "person": 3, "number": "singular", "category": "place", "min_level": 2},
+    {"word": "the station", "person": 3, "number": "singular", "category": "place", "min_level": 2},
+    {"word": "the supermarket", "person": 3, "number": "singular", "category": "place", "min_level": 2},
+    {"word": "the temple", "person": 3, "number": "singular", "category": "place", "min_level": 2},
+    {"word": "the theater", "person": 3, "number": "singular", "category": "place", "min_level": 2},
+    {"word": "the windows", "person": 3, "number": "plural", "category": "place", "min_level": 2},
+
+    # ---------------------------------------------------------
+    # 4. DEVICE / PROJECT 類 (搭配 Verbs: fix, design, build)
+    # ---------------------------------------------------------
+    # [Level 1]
+    {"word": "the robot", "person": 3, "number": "singular", "category": "device", "min_level": 1},
+    {"word": "the bus", "person": 3, "number": "singular", "category": "device", "min_level": 1},
+    {"word": "the car", "person": 3, "number": "singular", "category": "device", "min_level": 1},
+    {"word": "the fan", "person": 3, "number": "singular", "category": "device", "min_level": 1},
+    # [Level 2]
+    {"word": "the computer", "person": 3, "number": "singular", "category": "device", "min_level": 2},
+    {"word": "the camera", "person": 3, "number": "singular", "category": "device", "min_level": 2},
+    {"word": "the cellphone", "person": 3, "number": "singular", "category": "device", "min_level": 2},
+    {"word": "the machine", "person": 3, "number": "singular", "category": "device", "min_level": 2},
+    {"word": "the refrigerator", "person": 3, "number": "singular", "category": "device", "min_level": 2},
+    {"word": "the website", "person": 3, "number": "singular", "category": "project", "min_level": 2},
+    {"word": "the bridge", "person": 3, "number": "singular", "category": "project", "min_level": 2}
 ]
 
 TIME_MARKERS = {
