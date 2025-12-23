@@ -74,28 +74,27 @@ TIME_MARKERS = {
 
 PRONOUN_OBJ_MAP = {"I": "me", "He": "him", "She": "her", "We": "us", "They": "them", "You": "you"}
 
+
+
 # ==========================================
-# 3. [核心升級] 動態連接詞生成引擎
+# 3. [核心修復] 動態連接詞生成引擎
 # ==========================================
 
 class ConjunctionGenerator:
     """
-    動態連接詞生成器：
-    利用「情境模組」來組裝句子，而非死背硬記。
+    動態連接詞生成器 (修復雙重主詞 Bug 版)
     """
     
-    # 定義情境模組 (Logic Modules)
     SCENARIOS = {
-        # --- 情境 1: 天氣 (Weather) ---
+        # ... (這裡的情境資料保持不變，直接沿用原本的即可) ...
+        # 為了方便您複製，我把資料縮減顯示，請保留您原本完整的 SCENARIOS 資料
         "weather_bad": {
             "subjects": ["It", "The weather"],
             "causes": ["was raining hard", "was very stormy", "was terrible outside"],
             "effects_logical": ["we stayed at home", "the game was canceled", "I took a taxi", "we didn't go out"],
-            "effects_contrast": ["we went swimming", "he still went out", "the game continued"], # 用於 but/although
+            "effects_contrast": ["we went swimming", "he still went out", "the game continued"], 
             "level": 1
         },
-        
-        # --- 情境 2: 健康 (Health) ---
         "health_sick": {
             "subjects": ["He", "She", "Tom", "The boy"],
             "causes": ["was sick", "had a fever", "didn't feel well", "had a bad cold"],
@@ -103,8 +102,6 @@ class ConjunctionGenerator:
             "effects_contrast": ["still went to work", "refused to see a doctor", "looked very happy"],
             "level": 1
         },
-
-        # --- 情境 3: 學習與考試 (Study) ---
         "study_hard": {
             "subjects": ["The student", "Mary", "He", "She"],
             "causes": ["studied very hard", "prepared for the test", "read many books"],
@@ -112,8 +109,6 @@ class ConjunctionGenerator:
             "effects_contrast": ["failed the test", "got a bad score", "didn't understand the question"],
             "level": 2
         },
-
-        # --- 情境 4: 經濟與購買 (Money) ---
         "money_expensive": {
             "subjects": ["The car", "The house", "The bag"],
             "causes": ["was too expensive", "cost a lot of money", "was not cheap"],
@@ -121,8 +116,6 @@ class ConjunctionGenerator:
             "effects_contrast": ["he bought it anyway", "she paid for it", "it sold out quickly"],
             "level": 2
         },
-
-        # --- 情境 5: 飢餓 (Hunger) ---
         "physical_hungry": {
             "subjects": ["I", "He", "The dog", "The baby"],
             "causes": ["was very hungry", "hadn't eaten all day", "was starving"],
@@ -130,8 +123,6 @@ class ConjunctionGenerator:
             "effects_contrast": ["didn't want to eat", "gave the food away", "kept working"],
             "level": 1
         },
-        
-        # --- 情境 6: 趕時間 (Time/Hurry) ---
         "time_late": {
             "subjects": ["We", "They", "You"],
             "causes": ["were late", "missed the bus", "didn't hear the alarm"],
@@ -143,33 +134,18 @@ class ConjunctionGenerator:
 
     @staticmethod
     def generate(level_req=1):
-        # 1. 篩選符合等級的情境
         available_keys = [k for k, v in ConjunctionGenerator.SCENARIOS.items() if v["level"] <= level_req]
         if not available_keys: available_keys = list(ConjunctionGenerator.SCENARIOS.keys())
         
-        # 2. 隨機選一個情境 (例如: weather_bad)
         key = random.choice(available_keys)
         data = ConjunctionGenerator.SCENARIOS[key]
-        
-        # 3. 隨機選主詞
         subj = random.choice(data["subjects"])
         
-        # 4. 隨機決定考哪種邏輯 (因果 vs 轉折 vs 條件)
-        # patterns: 
-        # A: [Cause], so [Effect].
-        # B: [Effect] because [Cause].
-        # C: [Cause], but [Contrast].
-        # D: Although [Cause], [Contrast].
-        
         pattern_type = random.choice(["so", "because", "but", "although"])
-        
-        # 根據 pattern 準備句子成分
         cause = random.choice(data["causes"])
         
-        # 處理主詞單複數/人稱對應 (簡易版：如果主詞是 It/The weather，動詞不變；如果是人，需注意代名詞)
-        # 為了簡化，我們假設 effect 的主詞可以共用或省略，或者我們在 effect 裡寫完整句子
-        # 這裡做一個簡單的代名詞替換邏輯
-        pronoun = "he" # default
+        # 決定代名詞 (He/She/It/They...)
+        pronoun = "he"
         if subj in ["She", "Mary", "The girl"]: pronoun = "she"
         elif subj in ["It", "The weather", "The car", "The house"]: pronoun = "it"
         elif subj in ["We"]: pronoun = "we"
@@ -177,60 +153,61 @@ class ConjunctionGenerator:
         elif subj in ["I"]: pronoun = "I"
         elif subj in ["You"]: pronoun = "you"
         
-        # 簡單修飾：有些 effect 句子可能需要加上代名詞
-        # 我們直接從 data 裡選，這裡假設 data 裡的 effect 都是完整的子句或動詞片語
-        # 為了讓句子通順，如果 effect 開頭是動詞 (went, ate)，我們加上代名詞
-        
+        # --- [關鍵修改點] 智慧代名詞添加函數 ---
         def add_pronoun(text, pron):
-            # 簡單判斷：如果開頭是小寫單字，通常是動詞，加上代名詞
-            if text[0].islower(): return f"{pron} {text}"
-            return text
+            # 1. 取得句子的第一個字 (轉小寫方便比對)
+            first_word = text.split()[0].lower()
+            
+            # 2. 定義「這些字開頭就不用加代名詞」的清單
+            # 包含：限定詞 (the, a, my...) 和 代名詞 (I, he, we...)
+            skip_words = [
+                "the", "a", "an", "my", "your", "his", "her", "our", "their", "this", "that",
+                "i", "he", "she", "it", "we", "you", "they",
+                "tom", "mary", "john" # 常見人名
+            ]
+            
+            # 3. 檢查
+            if first_word in skip_words:
+                return text # 原句已經有主詞，直接回傳
+            
+            # 4. 如果不是上面那些字 (通常是動詞開頭，如 "went home")，才補代名詞
+            return f"{pron} {text}"
+        # -------------------------------------
 
         effect_logical = add_pronoun(random.choice(data["effects_logical"]), pronoun)
         effect_contrast = add_pronoun(random.choice(data["effects_contrast"]), pronoun)
 
-        # 5. 組裝題目
         question = ""
         answer = ""
         distractors = []
 
         if pattern_type == "so":
-            # [Subject] [Cause], ____ [Effect].
             question = f"{subj} {cause}, ____ {effect_logical}."
             answer = "so"
             distractors = ["but", "because", "although"]
 
         elif pattern_type == "because":
-            # [Subject/Pronoun] [Effect] ____ [Subject] [Cause].
-            # 這裡要注意，because 通常接原因。
-            # 例: He went to doctor ____ he was sick.
-            # 為了句子通順，我們重組一下：
-            q_part1 = effect_logical.capitalize() # Effect 放前
-            # Cause 放後，需加上主詞 (如果 cause 字串沒主詞)
-            # data['causes'] 通常是 "was sick"，所以要加 subj
-            q_part2 = f"{subj} {cause}"
+            # 這裡也要小心，如果是 "because [Subject] [Cause]"
+            # 我們的 cause 通常是 "was sick" (無主詞)，所以這裡必須強制加上代名詞
+            # 但 q_part1 (Effect) 已經經過 add_pronoun 處理，是安全的
+            q_part1 = effect_logical 
+            q_part1 = q_part1[0].upper() + q_part1[1:] # 句首大寫
             
-            # 修正：如果 q_part1 已經有主詞 (He went...)，那 q_part2 用代名詞 (he was...)
-            # 但我們的 effect_logical 是用 add_pronoun 產生的 (e.g., "he went...")
-            # 所以 q_part1 = "He went...", q_part2 = "he was sick"
-            q_part2 = f"{pronoun} {cause}"
+            q_part2 = f"{pronoun} {cause}" # Cause 通常是動詞片語，所以這裡強制加 pronoun 是安全的
             
             question = f"{q_part1} ____ {q_part2}."
             answer = "because"
             distractors = ["so", "but", "although"]
 
         elif pattern_type == "but":
-            # [Subject] [Cause], ____ [Contrast].
             question = f"{subj} {cause}, ____ {effect_contrast}."
             answer = "but"
             distractors = ["so", "because", "if"]
 
         elif pattern_type == "although":
-            # ____ [Subject] [Cause], [Contrast].
-            # 句首大寫處理
             question = f"____ {subj} {cause}, {effect_contrast}."
             answer = "Although"
-            distractors = ["Because", "So", "But"] # 大寫干擾項
+            distractors = ["Because", "So", "But"]
 
         random.shuffle(distractors)
         final_options = distractors[:3]
@@ -243,6 +220,7 @@ class ConjunctionGenerator:
             "answer": answer
         }
 
+# ... (後面的代碼不變)
 # ==========================================
 # 4. 邏輯函數 (Passive 專用)
 # ==========================================
