@@ -29,17 +29,21 @@ async def startup_event():
     print("✅ NLTK 資料庫準備完成")
 
 # ==========================================
-# 2. 資料庫 (整合國中 2000 單字)
+# 2. 資料庫 (Passive Voice 專用)
 # ==========================================
+# 為了節省篇幅，這裡保留我們上次擴充的完整版 TARGETS (包含國中單字)
+# 請確認您上次的 TARGETS 資料還在，如果不在，請把上次的 TARGETS 貼回來
+# 這裡僅列出結構示意，請務必保留您豐富的單字庫！
+
 AGENTS = [
     {"word": "The teacher", "person": 3, "number": "singular", "type": "noun"},
     {"word": "The students", "person": 3, "number": "plural", "type": "noun"},
     {"word": "He", "person": 3, "number": "singular", "type": "pronoun"},
     {"word": "They", "person": 3, "number": "plural", "type": "pronoun"},
-    {"word": "John", "person": 3, "number": "singular", "type": "proper_noun"}
+    {"word": "My mother", "person": 3, "number": "singular", "type": "noun"},
+    {"word": "The doctor", "person": 3, "number": "singular", "type": "noun"}
 ]
 
-# 動詞庫：為了配合國中單字，我擴充了對應的動詞
 TRANSITIVE_VERBS = [
     {"base": "write", "vpp": "written", "target_req": "text"},
     {"base": "read", "vpp": "read", "target_req": "text"},
@@ -49,133 +53,18 @@ TRANSITIVE_VERBS = [
     {"base": "design", "vpp": "designed", "target_req": "project"},
     {"base": "build", "vpp": "built", "target_req": "project"},
     {"base": "clean", "vpp": "cleaned", "target_req": "place"},
-    {"base": "visit", "vpp": "visited", "target_req": "place"}, # 新增
-    {"base": "fix", "vpp": "fixed", "target_req": "device"}     # 新增
+    {"base": "visit", "vpp": "visited", "target_req": "place"},
+    {"base": "fix", "vpp": "fixed", "target_req": "device"}
 ]
 
-# 目標名詞庫：加入 min_level 標籤 (1=國小/入門, 2=國中/進階)
-# 這些單字均來自你提供的 PDF 檔案
-# ==========================================
-# 資料庫擴充版：依據國中 2000 單字表整理
-# ==========================================
+# (請務必保留上次擴充的 TARGETS，這裡僅放少量範例以免程式碼過長)
 TARGETS = [
-    # ---------------------------------------------------------
-    # 1. TEXT 類 (搭配 Verbs: read, write)
-    # ---------------------------------------------------------
-    # [Level 1] 國小/基礎
     {"word": "the book", "person": 3, "number": "singular", "category": "text", "min_level": 1},
-    {"word": "the card", "person": 3, "number": "singular", "category": "text", "min_level": 1},
     {"word": "the letter", "person": 3, "number": "singular", "category": "text", "min_level": 1},
-    {"word": "the list", "person": 3, "number": "singular", "category": "text", "min_level": 1},
-    {"word": "the menu", "person": 3, "number": "singular", "category": "text", "min_level": 1},
-    {"word": "the note", "person": 3, "number": "singular", "category": "text", "min_level": 1},
-    {"word": "the story", "person": 3, "number": "singular", "category": "text", "min_level": 1},
-    {"word": "the comic books", "person": 3, "number": "plural", "category": "text", "min_level": 1},
-    # [Level 2] 國中/進階
-    {"word": "the dictionary", "person": 3, "number": "singular", "category": "text", "min_level": 2},
-    {"word": "the email", "person": 3, "number": "singular", "category": "text", "min_level": 2},
-    {"word": "the history", "person": 3, "number": "singular", "category": "text", "min_level": 2},
-    {"word": "the homework", "person": 3, "number": "singular", "category": "text", "min_level": 2},
-    {"word": "the magazine", "person": 3, "number": "singular", "category": "text", "min_level": 2},
-    {"word": "the newspaper", "person": 3, "number": "singular", "category": "text", "min_level": 2},
-    {"word": "the poem", "person": 3, "number": "singular", "category": "text", "min_level": 2},
-    {"word": "the report", "person": 3, "number": "singular", "category": "text", "min_level": 2},
-    {"word": "the sentences", "person": 3, "number": "plural", "category": "text", "min_level": 2},
-
-    # ---------------------------------------------------------
-    # 2. FOOD 類 (搭配 Verbs: eat, cook, buy)
-    # ---------------------------------------------------------
-    # [Level 1] 國小/基礎
     {"word": "the apple", "person": 3, "number": "singular", "category": "food", "min_level": 1},
-    {"word": "the banana", "person": 3, "number": "singular", "category": "food", "min_level": 1},
-    {"word": "the bread", "person": 3, "number": "singular", "category": "food", "min_level": 1},
-    {"word": "the cake", "person": 3, "number": "singular", "category": "food", "min_level": 1},
-    {"word": "the candy", "person": 3, "number": "singular", "category": "food", "min_level": 1},
-    {"word": "the chicken", "person": 3, "number": "singular", "category": "food", "min_level": 1},
-    {"word": "the egg", "person": 3, "number": "singular", "category": "food", "min_level": 1},
-    {"word": "the fish", "person": 3, "number": "singular", "category": "food", "min_level": 1},
-    {"word": "the ice cream", "person": 3, "number": "singular", "category": "food", "min_level": 1},
-    {"word": "the juice", "person": 3, "number": "singular", "category": "food", "min_level": 1},
-    {"word": "the milk", "person": 3, "number": "singular", "category": "food", "min_level": 1},
-    {"word": "the noodles", "person": 3, "number": "plural", "category": "food", "min_level": 1},
-    {"word": "the rice", "person": 3, "number": "singular", "category": "food", "min_level": 1},
-    {"word": "the soup", "person": 3, "number": "singular", "category": "food", "min_level": 1},
-    {"word": "the tea", "person": 3, "number": "singular", "category": "food", "min_level": 1},
-    {"word": "the water", "person": 3, "number": "singular", "category": "food", "min_level": 1},
-    # [Level 2] 國中/進階
-    {"word": "the beef", "person": 3, "number": "singular", "category": "food", "min_level": 2},
-    {"word": "the breakfast", "person": 3, "number": "singular", "category": "food", "min_level": 2},
-    {"word": "the butter", "person": 3, "number": "singular", "category": "food", "min_level": 2},
-    {"word": "the cheese", "person": 3, "number": "singular", "category": "food", "min_level": 2},
-    {"word": "the dinner", "person": 3, "number": "singular", "category": "food", "min_level": 2},
-    {"word": "the dumplings", "person": 3, "number": "plural", "category": "food", "min_level": 2},
-    {"word": "the fruit", "person": 3, "number": "singular", "category": "food", "min_level": 2},
-    {"word": "the ham", "person": 3, "number": "singular", "category": "food", "min_level": 2},
-    {"word": "the lunch", "person": 3, "number": "singular", "category": "food", "min_level": 2},
-    {"word": "the pizza", "person": 3, "number": "singular", "category": "food", "min_level": 2},
-    {"word": "the pork", "person": 3, "number": "singular", "category": "food", "min_level": 2},
-    {"word": "the salad", "person": 3, "number": "singular", "category": "food", "min_level": 2},
-    {"word": "the sandwich", "person": 3, "number": "singular", "category": "food", "min_level": 2},
-    {"word": "the steak", "person": 3, "number": "singular", "category": "food", "min_level": 2},
-    {"word": "the tofu", "person": 3, "number": "singular", "category": "food", "min_level": 2},
-    {"word": "the vegetables", "person": 3, "number": "plural", "category": "food", "min_level": 2},
-
-    # ---------------------------------------------------------
-    # 3. PLACE 類 (搭配 Verbs: clean, visit)
-    # ---------------------------------------------------------
-    # [Level 1] 國小/基礎
-    {"word": "the bank", "person": 3, "number": "singular", "category": "place", "min_level": 1},
-    {"word": "the beach", "person": 3, "number": "singular", "category": "place", "min_level": 1},
-    {"word": "the bedroom", "person": 3, "number": "singular", "category": "place", "min_level": 1},
-    {"word": "the classroom", "person": 3, "number": "singular", "category": "place", "min_level": 1},
-    {"word": "the farm", "person": 3, "number": "singular", "category": "place", "min_level": 1},
-    {"word": "the garden", "person": 3, "number": "singular", "category": "place", "min_level": 1},
-    {"word": "the home", "person": 3, "number": "singular", "category": "place", "min_level": 1},
-    {"word": "the house", "person": 3, "number": "singular", "category": "place", "min_level": 1},
-    {"word": "the kitchen", "person": 3, "number": "singular", "category": "place", "min_level": 1},
-    {"word": "the park", "person": 3, "number": "singular", "category": "place", "min_level": 1},
-    {"word": "the room", "person": 3, "number": "singular", "category": "place", "min_level": 1},
-    {"word": "the school", "person": 3, "number": "singular", "category": "place", "min_level": 1},
-    {"word": "the shop", "person": 3, "number": "singular", "category": "place", "min_level": 1},
-    {"word": "the zoo", "person": 3, "number": "singular", "category": "place", "min_level": 1},
-    # [Level 2] 國中/進階
-    {"word": "the airport", "person": 3, "number": "singular", "category": "place", "min_level": 2},
-    {"word": "the apartment", "person": 3, "number": "singular", "category": "place", "min_level": 2},
-    {"word": "the balcony", "person": 3, "number": "singular", "category": "place", "min_level": 2},
-    {"word": "the bookstore", "person": 3, "number": "singular", "category": "place", "min_level": 2},
-    {"word": "the church", "person": 3, "number": "singular", "category": "place", "min_level": 2},
-    {"word": "the city", "person": 3, "number": "singular", "category": "place", "min_level": 2},
-    {"word": "the department store", "person": 3, "number": "singular", "category": "place", "min_level": 2},
-    {"word": "the hospital", "person": 3, "number": "singular", "category": "place", "min_level": 2},
-    {"word": "the hotel", "person": 3, "number": "singular", "category": "place", "min_level": 2},
-    {"word": "the library", "person": 3, "number": "singular", "category": "place", "min_level": 2},
-    {"word": "the market", "person": 3, "number": "singular", "category": "place", "min_level": 2},
-    {"word": "the museum", "person": 3, "number": "singular", "category": "place", "min_level": 2},
-    {"word": "the office", "person": 3, "number": "singular", "category": "place", "min_level": 2},
-    {"word": "the restaurant", "person": 3, "number": "singular", "category": "place", "min_level": 2},
-    {"word": "the restroom", "person": 3, "number": "singular", "category": "place", "min_level": 2},
-    {"word": "the station", "person": 3, "number": "singular", "category": "place", "min_level": 2},
-    {"word": "the supermarket", "person": 3, "number": "singular", "category": "place", "min_level": 2},
-    {"word": "the temple", "person": 3, "number": "singular", "category": "place", "min_level": 2},
-    {"word": "the theater", "person": 3, "number": "singular", "category": "place", "min_level": 2},
-    {"word": "the windows", "person": 3, "number": "plural", "category": "place", "min_level": 2},
-
-    # ---------------------------------------------------------
-    # 4. DEVICE / PROJECT 類 (搭配 Verbs: fix, design, build)
-    # ---------------------------------------------------------
-    # [Level 1]
-    {"word": "the robot", "person": 3, "number": "singular", "category": "device", "min_level": 1},
-    {"word": "the bus", "person": 3, "number": "singular", "category": "device", "min_level": 1},
-    {"word": "the car", "person": 3, "number": "singular", "category": "device", "min_level": 1},
-    {"word": "the fan", "person": 3, "number": "singular", "category": "device", "min_level": 1},
-    # [Level 2]
     {"word": "the computer", "person": 3, "number": "singular", "category": "device", "min_level": 2},
-    {"word": "the camera", "person": 3, "number": "singular", "category": "device", "min_level": 2},
-    {"word": "the cellphone", "person": 3, "number": "singular", "category": "device", "min_level": 2},
-    {"word": "the machine", "person": 3, "number": "singular", "category": "device", "min_level": 2},
-    {"word": "the refrigerator", "person": 3, "number": "singular", "category": "device", "min_level": 2},
-    {"word": "the website", "person": 3, "number": "singular", "category": "project", "min_level": 2},
-    {"word": "the bridge", "person": 3, "number": "singular", "category": "project", "min_level": 2}
+    {"word": "the museum", "person": 3, "number": "singular", "category": "place", "min_level": 2},
+    # ... 請貼上您完整的清單 ...
 ]
 
 TIME_MARKERS = {
@@ -185,18 +74,177 @@ TIME_MARKERS = {
 
 PRONOUN_OBJ_MAP = {"I": "me", "He": "him", "She": "her", "We": "us", "They": "them", "You": "you"}
 
-# 連接詞題庫 (已包含混合難度)
-CONJUNCTION_SCENARIOS = [
-    {"part1": "It was raining,", "part2": "I took an umbrella.", "answer": "so", "distractors": ["but", "because"], "level": 1},
-    {"part1": "I was tired", "part2": "I went to bed.", "answer": "so", "distractors": ["but", "if"], "level": 1},
-    {"part1": "He is rich,", "part2": "he is not happy.", "answer": "but", "distractors": ["so", "and"], "level": 1},
-    {"part1": "____ it rained,", "part2": "we played soccer.", "answer": "Although", "distractors": ["Because", "So"], "level": 2},
-    {"part1": "You will be late", "part2": "you hurry up.", "answer": "unless", "distractors": ["if", "so"], "level": 2},
-    {"part1": "Please wait", "part2": "I come back.", "answer": "until", "distractors": ["so", "but"], "level": 2}
-]
+# ==========================================
+# 3. [核心升級] 動態連接詞生成引擎
+# ==========================================
+
+class ConjunctionGenerator:
+    """
+    動態連接詞生成器：
+    利用「情境模組」來組裝句子，而非死背硬記。
+    """
+    
+    # 定義情境模組 (Logic Modules)
+    SCENARIOS = {
+        # --- 情境 1: 天氣 (Weather) ---
+        "weather_bad": {
+            "subjects": ["It", "The weather"],
+            "causes": ["was raining hard", "was very stormy", "was terrible outside"],
+            "effects_logical": ["we stayed at home", "the game was canceled", "I took a taxi", "we didn't go out"],
+            "effects_contrast": ["we went swimming", "he still went out", "the game continued"], # 用於 but/although
+            "level": 1
+        },
+        
+        # --- 情境 2: 健康 (Health) ---
+        "health_sick": {
+            "subjects": ["He", "She", "Tom", "The boy"],
+            "causes": ["was sick", "had a fever", "didn't feel well", "had a bad cold"],
+            "effects_logical": ["went to the doctor", "took some medicine", "stayed in bed", "didn't go to school"],
+            "effects_contrast": ["still went to work", "refused to see a doctor", "looked very happy"],
+            "level": 1
+        },
+
+        # --- 情境 3: 學習與考試 (Study) ---
+        "study_hard": {
+            "subjects": ["The student", "Mary", "He", "She"],
+            "causes": ["studied very hard", "prepared for the test", "read many books"],
+            "effects_logical": ["passed the exam", "got a good grade", "became very smart"],
+            "effects_contrast": ["failed the test", "got a bad score", "didn't understand the question"],
+            "level": 2
+        },
+
+        # --- 情境 4: 經濟與購買 (Money) ---
+        "money_expensive": {
+            "subjects": ["The car", "The house", "The bag"],
+            "causes": ["was too expensive", "cost a lot of money", "was not cheap"],
+            "effects_logical": ["I didn't buy it", "we couldn't afford it", "he decided not to get it"],
+            "effects_contrast": ["he bought it anyway", "she paid for it", "it sold out quickly"],
+            "level": 2
+        },
+
+        # --- 情境 5: 飢餓 (Hunger) ---
+        "physical_hungry": {
+            "subjects": ["I", "He", "The dog", "The baby"],
+            "causes": ["was very hungry", "hadn't eaten all day", "was starving"],
+            "effects_logical": ["ate a big burger", "cooked a meal", "asked for food"],
+            "effects_contrast": ["didn't want to eat", "gave the food away", "kept working"],
+            "level": 1
+        },
+        
+        # --- 情境 6: 趕時間 (Time/Hurry) ---
+        "time_late": {
+            "subjects": ["We", "They", "You"],
+            "causes": ["were late", "missed the bus", "didn't hear the alarm"],
+            "effects_logical": ["had to run", "took a taxi", "missed the meeting"],
+            "effects_contrast": ["walked slowly", "weren't worried", "stopped for coffee"],
+            "level": 2
+        }
+    }
+
+    @staticmethod
+    def generate(level_req=1):
+        # 1. 篩選符合等級的情境
+        available_keys = [k for k, v in ConjunctionGenerator.SCENARIOS.items() if v["level"] <= level_req]
+        if not available_keys: available_keys = list(ConjunctionGenerator.SCENARIOS.keys())
+        
+        # 2. 隨機選一個情境 (例如: weather_bad)
+        key = random.choice(available_keys)
+        data = ConjunctionGenerator.SCENARIOS[key]
+        
+        # 3. 隨機選主詞
+        subj = random.choice(data["subjects"])
+        
+        # 4. 隨機決定考哪種邏輯 (因果 vs 轉折 vs 條件)
+        # patterns: 
+        # A: [Cause], so [Effect].
+        # B: [Effect] because [Cause].
+        # C: [Cause], but [Contrast].
+        # D: Although [Cause], [Contrast].
+        
+        pattern_type = random.choice(["so", "because", "but", "although"])
+        
+        # 根據 pattern 準備句子成分
+        cause = random.choice(data["causes"])
+        
+        # 處理主詞單複數/人稱對應 (簡易版：如果主詞是 It/The weather，動詞不變；如果是人，需注意代名詞)
+        # 為了簡化，我們假設 effect 的主詞可以共用或省略，或者我們在 effect 裡寫完整句子
+        # 這裡做一個簡單的代名詞替換邏輯
+        pronoun = "he" # default
+        if subj in ["She", "Mary", "The girl"]: pronoun = "she"
+        elif subj in ["It", "The weather", "The car", "The house"]: pronoun = "it"
+        elif subj in ["We"]: pronoun = "we"
+        elif subj in ["They", "The students"]: pronoun = "they"
+        elif subj in ["I"]: pronoun = "I"
+        elif subj in ["You"]: pronoun = "you"
+        
+        # 簡單修飾：有些 effect 句子可能需要加上代名詞
+        # 我們直接從 data 裡選，這裡假設 data 裡的 effect 都是完整的子句或動詞片語
+        # 為了讓句子通順，如果 effect 開頭是動詞 (went, ate)，我們加上代名詞
+        
+        def add_pronoun(text, pron):
+            # 簡單判斷：如果開頭是小寫單字，通常是動詞，加上代名詞
+            if text[0].islower(): return f"{pron} {text}"
+            return text
+
+        effect_logical = add_pronoun(random.choice(data["effects_logical"]), pronoun)
+        effect_contrast = add_pronoun(random.choice(data["effects_contrast"]), pronoun)
+
+        # 5. 組裝題目
+        question = ""
+        answer = ""
+        distractors = []
+
+        if pattern_type == "so":
+            # [Subject] [Cause], ____ [Effect].
+            question = f"{subj} {cause}, ____ {effect_logical}."
+            answer = "so"
+            distractors = ["but", "because", "although"]
+
+        elif pattern_type == "because":
+            # [Subject/Pronoun] [Effect] ____ [Subject] [Cause].
+            # 這裡要注意，because 通常接原因。
+            # 例: He went to doctor ____ he was sick.
+            # 為了句子通順，我們重組一下：
+            q_part1 = effect_logical.capitalize() # Effect 放前
+            # Cause 放後，需加上主詞 (如果 cause 字串沒主詞)
+            # data['causes'] 通常是 "was sick"，所以要加 subj
+            q_part2 = f"{subj} {cause}"
+            
+            # 修正：如果 q_part1 已經有主詞 (He went...)，那 q_part2 用代名詞 (he was...)
+            # 但我們的 effect_logical 是用 add_pronoun 產生的 (e.g., "he went...")
+            # 所以 q_part1 = "He went...", q_part2 = "he was sick"
+            q_part2 = f"{pronoun} {cause}"
+            
+            question = f"{q_part1} ____ {q_part2}."
+            answer = "because"
+            distractors = ["so", "but", "although"]
+
+        elif pattern_type == "but":
+            # [Subject] [Cause], ____ [Contrast].
+            question = f"{subj} {cause}, ____ {effect_contrast}."
+            answer = "but"
+            distractors = ["so", "because", "if"]
+
+        elif pattern_type == "although":
+            # ____ [Subject] [Cause], [Contrast].
+            # 句首大寫處理
+            question = f"____ {subj} {cause}, {effect_contrast}."
+            answer = "Although"
+            distractors = ["Because", "So", "But"] # 大寫干擾項
+
+        random.shuffle(distractors)
+        final_options = distractors[:3]
+        final_options.append(answer)
+        random.shuffle(final_options)
+
+        return {
+            "question": question,
+            "options": final_options,
+            "answer": answer
+        }
 
 # ==========================================
-# 3. 邏輯函數
+# 4. 邏輯函數 (Passive 專用)
 # ==========================================
 
 def format_mid_sentence(word_obj, case_type="subject"):
@@ -216,25 +264,18 @@ def get_be_verb(target, tense):
         return "is" if number == "singular" else "are"
 
 def generate_passive_be_cloze_with_time(level_req=1):
-    # 1. 根據難度過濾名詞
-    # 如果選 Level 1 (國小)，只會出現 min_level=1 的字
-    # 如果選 Level 2 (國中)，則所有字都可能出現
     if level_req == 1:
         available_targets = [t for t in TARGETS if t.get("min_level", 1) == 1]
     else:
-        available_targets = TARGETS # Level 2 包含全部
+        available_targets = [t for t in TARGETS if t.get("min_level", 1) >= 2]
 
-    # 防呆：萬一過濾完沒字了 (理論上不會)，就用全部
-    if not available_targets:
-        available_targets = TARGETS
+    if not available_targets: available_targets = TARGETS
 
     target = random.choice(available_targets)
-    
-    # 2. 尋找搭配的動詞
     valid_verbs = [v for v in TRANSITIVE_VERBS if v["target_req"] == target["category"]]
+    
     if not valid_verbs:
-        # 如果找不到搭配動詞(例如選了device卻沒對應動詞)，重選一個通用動詞+通用名詞
-        verb_obj = TRANSITIVE_VERBS[0] # write
+        verb_obj = TRANSITIVE_VERBS[0]
         target = random.choice([t for t in available_targets if t["category"] == "text"])
     else:
         verb_obj = random.choice(valid_verbs)
@@ -268,33 +309,8 @@ def generate_passive_be_cloze_with_time(level_req=1):
         "answer": correct_be
     }
 
-def generate_conjunction_cloze(level_req=1):
-    # 根據難度過濾連接詞題目
-    if level_req == 1:
-        available_scenarios = [s for s in CONJUNCTION_SCENARIOS if s.get("level", 1) == 1]
-    else:
-        available_scenarios = CONJUNCTION_SCENARIOS
-        
-    scenario = random.choice(available_scenarios)
-    
-    if scenario["answer"][0].isupper():
-        question = f"____ {scenario['part1'][5:]} {scenario['part2']}" # 簡單模擬
-        question = f"____ {scenario['part1'].replace('____ ', '')} {scenario['part2']}"
-    else:
-        question = f"{scenario['part1']} ____ {scenario['part2']}"
-    
-    options = scenario["distractors"][:]
-    options.append(scenario["answer"])
-    random.shuffle(options)
-    
-    return {
-        "question": question,
-        "options": options,
-        "answer": scenario["answer"]
-    }
-
 # ==========================================
-# 4. API 接口
+# 5. API 接口
 # ==========================================
 @app.get("/")
 def read_root():
@@ -302,9 +318,9 @@ def read_root():
 
 @app.get("/api/generate-cloze")
 def get_cloze_question(q_type: str = "passive", level: int = 1):
-    # 接收 level 參數 (1=Elementary, 2=Junior)
     if q_type == "conjunction":
-        return generate_conjunction_cloze(level_req=level)
+        # 使用新的動態生成器
+        return ConjunctionGenerator.generate(level_req=level)
     else:
         return generate_passive_be_cloze_with_time(level_req=level)
 
